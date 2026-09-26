@@ -29,9 +29,9 @@ public class PlayerStateMachine : MonoBehaviour
 
     // player state
     [Header("State Varibales")]
-    public PlayerBaseState CuurentState {get; private set;}
+    public PlayerBaseState CurrentState {get; private set;}
 
-    public PlayerIdelState idelState{get; private set;}
+    public PlayerIdleState idelState{get; private set;}
     public PlayerWalkState walkState{get; private set;}
     public PlayerSprintState SprintState { get; private set; }
     public PlayerJumpState JumpState { get; private set; }
@@ -57,7 +57,7 @@ public class PlayerStateMachine : MonoBehaviour
         animator = GetComponent<Animator>();
         mainCamera = Camera.main.transform;
 
-        idelState =new PlayerIdelState(this);
+        idelState =new PlayerIdleState(this);
         walkState = new PlayerWalkState(this);
         SprintState = new PlayerSprintState(this);
         JumpState = new PlayerJumpState(this);
@@ -77,7 +77,7 @@ public class PlayerStateMachine : MonoBehaviour
     void Update()
     {
         // if the cuurent state isn't null update the state
-        CuurentState?.UpdateState();
+        CurrentState?.UpdateState();
 
         // to make the animation smoth instead off the snaping animation
         animationBlend = Mathf.Lerp(animationBlend, TargetSpeed, Time.deltaTime * 10f);
@@ -86,7 +86,7 @@ public class PlayerStateMachine : MonoBehaviour
 
     void FixedUpdate()
     {
-        CuurentState?.FixedUpdateState();
+        CurrentState?.FixedUpdateState();
     }
 
     private void LateUpdate()
@@ -116,10 +116,10 @@ public class PlayerStateMachine : MonoBehaviour
     public void SwitchState(PlayerBaseState newState)
     {
         //doing the exit state function first before switching 
-        CuurentState?.ExitState();
+        CurrentState?.ExitState();
 
         // getting the new state and invoke the enter state function for that state.
-        CuurentState = newState;
-        CuurentState.EnterState();
+        CurrentState = newState;
+        CurrentState.EnterState();
     }
 }

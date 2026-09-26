@@ -2,9 +2,9 @@ using UnityEditor.Timeline;
 using UnityEngine;
 
 
-public class PlayerIdelState : PlayerBaseState
+public class PlayerIdleState : PlayerBaseState
 {
-    public PlayerIdelState(PlayerStateMachine cuurentContext) : base(cuurentContext)
+    public PlayerIdleState(PlayerStateMachine cuurentContext) : base(cuurentContext)
     {
     }
 
