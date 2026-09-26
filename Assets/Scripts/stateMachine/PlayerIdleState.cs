@@ -36,11 +36,19 @@ public class PlayerIdleState : PlayerBaseState
         {
             manager.SwitchState(manager.walkState);
             return;
-        } else if (manager.inputs.jump)
+        }
+        else if (manager.inputs.jump)
         {
-            // if the player input for jump was true change to jump state
-            manager.SwitchState(manager.JumpState);
-            return;
+            if (manager.JumpCooldownTimer <= 0f)
+            {
+                manager.SwitchState(manager.JumpState);
+                return;
+            }
+            else
+            {
+                // إذا ضغط اللاعب أثناء فترة التبريد، افرغ الإدخال حتى لا ينط تلقائياً بعد انتهاء التبريد
+                manager.inputs.jump = false;
+            }
         }
 
         // lerp here is used for deaccerlation of the speed to 0

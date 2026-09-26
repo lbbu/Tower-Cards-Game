@@ -45,11 +45,18 @@ public class PlayerWalkState : PlayerBaseState
         }
         else if (manager.inputs.jump)
         {
-            // when the player input for jump is entered, change to jump state.
-            manager.SwitchState(manager.JumpState);
-            return;
+            if (manager.JumpCooldownTimer <= 0f)
+            {
+                manager.SwitchState(manager.JumpState);
+                return;
+            }
+            else
+            {
+                // إذا ضغط اللاعب أثناء فترة التبريد، افرغ الإدخال حتى لا ينط تلقائياً بعد انتهاء التبريد
+                manager.inputs.jump = false;
+            }
         }
-        
+
         // to know where the camera is looking
         // forward is for W/S inputs
         Vector3 cameraForword = manager.mainCamera.forward;

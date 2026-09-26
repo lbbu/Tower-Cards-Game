@@ -15,6 +15,12 @@ MonoBehaviour:
   WalkSpeed: 2
   SprintSpeed: 5.335
   SpeedChangeRate: 10
-  JumpHeight: 1.2
+  JumpHeight: 2
   Gravity: -15
+  CanDoubleJump: 1
+  DoubleJumpHeight: 4
+  JumpCooldown: 0.15
+  DoubleJumpTimeout: 0.1
+  FallTimeout: 2
+  DoubleFallTimeout: 0.15
   CameraSensitivity: 1

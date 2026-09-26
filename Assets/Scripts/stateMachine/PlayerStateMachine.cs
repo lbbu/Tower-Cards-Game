@@ -47,6 +47,8 @@ public class PlayerStateMachine : MonoBehaviour
     [HideInInspector] public float TargetSpeed;
 
     [HideInInspector] public float VerticalVelocity;
+
+    [HideInInspector] public float JumpCooldownTimer;
     private float animationBlend;
 
     // awake is used to initalized varibles.
@@ -76,10 +78,14 @@ public class PlayerStateMachine : MonoBehaviour
 
     void Update()
     {
-        // if the cuurent state isn't null update the state
+        // إنقاص مؤقت التبريد باستمرار
+        if (JumpCooldownTimer >= 0f)
+        {
+            JumpCooldownTimer -= Time.deltaTime;
+        }
+
         CurrentState?.UpdateState();
 
-        // to make the animation smoth instead off the snaping animation
         animationBlend = Mathf.Lerp(animationBlend, TargetSpeed, Time.deltaTime * 10f);
         animator.SetFloat("Speed", animationBlend);
     }

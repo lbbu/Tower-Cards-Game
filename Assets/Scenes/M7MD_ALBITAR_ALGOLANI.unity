@@ -4472,6 +4472,7 @@ MonoBehaviour:
   cuurentSpeed: 0
   TargetSpeed: 0
   VerticalVelocity: 0
+  JumpCooldownTimer: 0
 --- !u!114 &5866666020131024725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4684,8 +4685,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6113337127103598523}
   - component: {fileID: 4967093273260633783}
-  - component: {fileID: 1012492689741620676}
   - component: {fileID: 2586922496082620189}
+  - component: {fileID: 1012492689741620676}
   m_Layer: 0
   m_Name: PlayerFollowCamera
   m_TagString: Untagged
@@ -4839,6 +4840,7 @@ MonoBehaviour:
   cuurentSpeed: 0
   TargetSpeed: 0
   VerticalVelocity: 0
+  JumpCooldownTimer: 0
 --- !u!1 &6240733293128806545
 GameObject:
   m_ObjectHideFlags: 0

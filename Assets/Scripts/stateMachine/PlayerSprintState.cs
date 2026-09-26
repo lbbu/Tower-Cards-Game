@@ -28,11 +28,20 @@ public class PlayerSprintState : PlayerBaseState
 
     public override void UpdateState()
     {
-        if (manager.inputs.jump){
-            // when player input the jump key, switch to jump state
-            manager.SwitchState(manager.JumpState);
-            return;
-        }else if(manager.inputs.move == Vector2.zero)
+        if (manager.inputs.jump)
+        {
+            if (manager.JumpCooldownTimer <= 0f)
+            {
+                manager.SwitchState(manager.JumpState);
+                return;
+            }
+            else
+            {
+                // إذا ضغط اللاعب أثناء فترة التبريد، افرغ الإدخال حتى لا ينط تلقائياً بعد انتهاء التبريد
+                manager.inputs.jump = false;
+            }
+        }
+        else if(manager.inputs.move == Vector2.zero)
         {
             // when player stop moving switch to idel 
             manager.SwitchState(manager.idelState);
