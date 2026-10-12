@@ -1,9 +1,12 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "ItemData", menuName = "Items/Item Base/ItemData")]
-public class ItemData : ScriptableObject
+[CreateAssetMenu(
+    fileName = "ItemData",
+    menuName = "Items/Item Base/ItemData"
+)]
+public class ItemDataSO : ScriptableObject
 {
-
     [Header("Identity")]
     [SerializeField] private string itemID;
     [SerializeField] private string itemName;
@@ -25,6 +28,9 @@ public class ItemData : ScriptableObject
     [Min(1)]
     [SerializeField] private int maxStackSize = 1;
 
+    [Header("Modules")]
+    [SerializeField] private List<ItemModuleSO> itemModules = new();
+
     public string ItemID => itemID;
     public string ItemName => itemName;
     public string ItemDescription => itemDescription;
@@ -34,7 +40,19 @@ public class ItemData : ScriptableObject
     public float ItemWeight => itemWeight;
     public int MaxStackSize => maxStackSize;
 
+    public bool TryGetModule<TModule>(out TModule module)
+        where TModule : ItemModuleSO
+    {
+        foreach (ItemModuleSO itemModule in itemModules)
+        {
+            if (itemModule is TModule foundModule)
+            {
+                module = foundModule;
+                return true;
+            }
+        }
 
-
-
+        module = null;
+        return false;
+    }
 }

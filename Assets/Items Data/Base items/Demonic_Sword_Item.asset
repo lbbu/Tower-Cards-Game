@@ -20,3 +20,4 @@ MonoBehaviour:
   basePrice: 300
   itemWeight: 5
   maxStackSize: 1
+  itemModules: []
