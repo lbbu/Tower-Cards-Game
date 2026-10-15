@@ -20,4 +20,6 @@ MonoBehaviour:
   basePrice: 300
   itemWeight: 5
   maxStackSize: 1
-  itemModules: []
+  itemModules:
+  - {fileID: 11400000, guid: 89ac26e14c8766c46937519847cfe689, type: 2}
+  - {fileID: 11400000, guid: ec69a4c1d29f986429e934cd30f52abf, type: 2}
