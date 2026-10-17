@@ -6,29 +6,16 @@ public class ItemSystemTest : MonoBehaviour
 
     private void Start()
     {
-        if (swordItem == null)
-        {
-            Debug.LogError("Sword Item is not assigned!");
-            return;
-        }
-
         ItemInstance sword1 = new ItemInstance(swordItem);
         ItemInstance sword2 = new ItemInstance(swordItem);
 
-        Debug.Log("Sword 1 ID: " + sword1.InstanceID);
-        Debug.Log("Sword 2 ID: " + sword2.InstanceID);
-
-        Debug.Log("Same ItemData: " +
-            (sword1.ItemData == sword2.ItemData));
-
-        Debug.Log("Different Instance IDs: " +
-            (sword1.InstanceID != sword2.InstanceID));
-
-        if (swordItem.TryGetModule<DurabilityModuleSO>(
-            out DurabilityModuleSO durabilityModule))
+        if (sword1.TryGetState<DurabilityState>(out var state1) &&
+            sword2.TryGetState<DurabilityState>(out var state2))
         {
-            Debug.Log("Max Durability: " +
-                durabilityModule.MaxDurability);
+            state1.TakeDamage(30f);
+
+            Debug.Log("Sword 1 Durability: " + state1.CurrentDurability);
+            Debug.Log("Sword 2 Durability: " + state2.CurrentDurability);
         }
     }
 }
