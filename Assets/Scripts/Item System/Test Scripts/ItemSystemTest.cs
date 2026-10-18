@@ -1,3 +1,4 @@
+using NUnit.Framework.Internal.Execution;
 using UnityEngine;
 
 public class ItemSystemTest : MonoBehaviour
@@ -6,16 +7,27 @@ public class ItemSystemTest : MonoBehaviour
 
     private void Start()
     {
-        ItemInstance sword1 = new ItemInstance(swordItem);
-        ItemInstance sword2 = new ItemInstance(swordItem);
 
-        if (sword1.TryGetState<DurabilityState>(out var state1) &&
-            sword2.TryGetState<DurabilityState>(out var state2))
-        {
-            state1.TakeDamage(30f);
+        ItemInstance originalSword = new ItemInstance(swordItem);
 
-            Debug.Log("Sword 1 Durability: " + state1.CurrentDurability);
-            Debug.Log("Sword 2 Durability: " + state2.CurrentDurability);
-        }
+        originalSword.TryGetState<DurabilityState>(out var originalState);
+        originalState.TakeDamage(45f);
+
+        // Capture
+        string savedID = originalSword.InstanceID;
+        var savedStates = originalSword.CaptureStates();
+
+        // Restore
+        ItemInstance restoredSword = new ItemInstance(swordItem, savedID);
+        restoredSword.RestoreStates(savedStates);
+
+        restoredSword.TryGetState<DurabilityState>(out var restoredState);
+
+        Debug.Log("Same ID: " +
+            (originalSword.InstanceID == restoredSword.InstanceID));
+
+        Debug.Log("Restored Durability: " +
+            restoredState.CurrentDurability);
+
     }
 }

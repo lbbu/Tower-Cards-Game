@@ -37,6 +37,50 @@ public class ItemInstance
         }
     }
 
+    public ItemInstance(ItemDataSO itemData, string instanceID)
+    : this(itemData)
+    {
+        if (string.IsNullOrWhiteSpace(instanceID))
+            throw new ArgumentException(
+                "Instance ID cannot be empty.",
+                nameof(instanceID));
+
+        InstanceID = instanceID;
+    }
+
+
+    public Dictionary<Type, ItemModuleStateData> CaptureStates()
+    {
+        var savedStates = new Dictionary<Type, ItemModuleStateData>();
+
+        foreach (var pair in moduleStates)
+        {
+            savedStates.Add(
+                pair.Key,
+                pair.Value.CaptureState()
+            );
+        }
+
+        return savedStates;
+    }
+
+    public void RestoreStates(
+        Dictionary<Type, ItemModuleStateData> savedStates)
+    {
+        if (savedStates == null)
+            throw new ArgumentNullException(nameof(savedStates));
+
+        foreach (var pair in savedStates)
+        {
+            if (moduleStates.TryGetValue(
+                pair.Key, out ItemModuleState state))
+            {
+                state.RestoreState(pair.Value);
+            }
+        }
+    }
+
+
     public bool TryGetState<TState>(out TState state)
         where TState : ItemModuleState
     {
