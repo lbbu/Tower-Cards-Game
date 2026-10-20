@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2a87257cbf5d1d47b1e849032d10578, type: 3}
-  m_Name: Demonic_Sword_Module
-  m_EditorClassIdentifier: Assembly-CSharp::SwordWeaponModuleSO
-  baseDamage: 100
-  hitsPerSecond: 0.95
+  m_Script: {fileID: 11500000, guid: eeeb92efba4060243a1f8575a5d5e90d, type: 3}
+  m_Name: Durability_Module
+  m_EditorClassIdentifier: Assembly-CSharp::DurabilityModuleSO
+  maxDurability: 100

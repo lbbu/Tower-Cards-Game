@@ -55,7 +55,20 @@ public class DurabilityState : ItemModuleState
                 nameof(data));
         }
 
-        SetCurrentDurability(durabilityData.currentDurability);
+        float value = durabilityData.currentDurability;
+
+        if (float.IsNaN(value) ||
+            float.IsInfinity(value) ||
+            value < 0f ||
+            value > maxDurability)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(data),
+                $"Invalid durability value: {value}"
+            );
+        }
+
+        CurrentDurability = value;
     }
 
 

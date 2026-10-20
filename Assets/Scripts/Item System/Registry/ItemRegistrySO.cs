@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,34 +14,46 @@ public class ItemRegistrySO : ScriptableObject
 
     private void OnEnable()
     {
+        InvalidateLookup();
+    }
+
+    public void InvalidateLookup()
+    {
         itemLookup = null;
     }
 
     private void BuildLookup()
     {
-        itemLookup = new Dictionary<string, ItemDataSO>();
+        var newLookup = new Dictionary<string, ItemDataSO>(
+            StringComparer.Ordinal
+        );
 
         foreach (ItemDataSO item in items)
         {
             if (item == null)
             {
-                Debug.LogWarning("ItemRegistry contains a null item.", this);
-                continue;
+                throw new InvalidOperationException(
+                    $"ItemRegistry '{name}' contains a null item."
+                );
             }
 
             if (string.IsNullOrWhiteSpace(item.ItemID))
             {
-                Debug.LogError(
-                    $"Item '{item.name}' has an empty ItemID.", this);
-                continue;
+                throw new InvalidOperationException(
+                    $"Item '{item.name}' has an empty ItemID."
+                );
             }
 
-            if (!itemLookup.TryAdd(item.ItemID, item))
+            if (!newLookup.TryAdd(item.ItemID, item))
             {
-                Debug.LogError(
-                    $"Duplicate ItemID found: {item.ItemID}", this);
+                throw new InvalidOperationException(
+                    $"Duplicate ItemID found: {item.ItemID}"
+                );
             }
         }
+
+        itemLookup = newLookup;
+
     }
 
     public bool TryGetItem(string itemID, out ItemDataSO item)
