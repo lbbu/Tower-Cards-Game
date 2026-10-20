@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a8bb36881c21f7c4ea3a218c1af85b3a, type: 3}
-  m_Name: Demonic_Sword_Item
-  m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  m_Name: Test Sword
+  m_EditorClassIdentifier: Assembly-CSharp::ItemDataSO
   itemID: Demonic_Sword_Item
-  itemName: Demonic Sword
+  itemName: test sword
   itemDescription: 
-  itemIcon: {fileID: -2174932687422517835, guid: f9c2679264c6c9248a69e5e2feadf7c6, type: 3}
-  worldPrefab: {fileID: 286051942468064321, guid: e21278299e1948e468718d680ca167b6, type: 3}
-  basePrice: 300
-  itemWeight: 5
+  itemIcon: {fileID: 0}
+  worldPrefab: {fileID: 0}
+  basePrice: 0
+  itemWeight: 0
   maxStackSize: 1
   itemModules: []

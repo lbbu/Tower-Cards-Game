@@ -31,6 +31,8 @@ public class ItemDataSO : ScriptableObject
     [Header("Modules")]
     [SerializeField] private List<ItemModuleSO> itemModules = new();
 
+    public IReadOnlyList<ItemModuleSO> ItemModules => itemModules;
+
     public string ItemID => itemID;
     public string ItemName => itemName;
     public string ItemDescription => itemDescription;
