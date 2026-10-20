@@ -260,7 +260,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1880022004}
-  - component: {fileID: 1880022003}
   m_Layer: 0
   m_Name: Test Item
   m_TagString: Untagged
@@ -268,20 +267,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1880022003
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1880022002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ee45245505f149478866c9af6bf8bde, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ItemSystemTest
-  swordItem: {fileID: 11400000, guid: c5d12e64b773bbb4c833d1801e070f5b, type: 2}
-  itemRegistry: {fileID: 11400000, guid: 8c2ab657266979a4d934238c9c19655d, type: 2}
 --- !u!4 &1880022004
 Transform:
   m_ObjectHideFlags: 0

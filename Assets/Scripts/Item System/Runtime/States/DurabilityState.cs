@@ -12,7 +12,7 @@ public class DurabilityState : ItemModuleState
 
     public DurabilityState(float maxDurability)
     {
-        if (maxDurability <= 0)
+        if (float.IsNaN(maxDurability) || float.IsInfinity(maxDurability) || maxDurability <= 0f)
             throw new ArgumentOutOfRangeException(nameof(maxDurability));
 
         this.maxDurability = maxDurability;
@@ -21,7 +21,7 @@ public class DurabilityState : ItemModuleState
 
     public void TakeDamage(float amount)
     {
-        if (amount < 0)
+        if (float.IsNaN(amount) || float.IsInfinity(amount) || amount < 0f)
             throw new ArgumentOutOfRangeException(nameof(amount));
 
         CurrentDurability = Math.Max(
@@ -31,6 +31,9 @@ public class DurabilityState : ItemModuleState
 
     public void SetCurrentDurability(float value)
     {
+        if (float.IsNaN(value) || float.IsInfinity(value))
+            throw new ArgumentOutOfRangeException(nameof(value));
+
         CurrentDurability = Math.Clamp(
             value,
             0f,

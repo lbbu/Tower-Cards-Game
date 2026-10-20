@@ -28,6 +28,9 @@ public class ItemRegistrySO : ScriptableObject
             StringComparer.Ordinal
         );
 
+        if (items == null)
+            throw new InvalidOperationException($"ItemRegistry '{name}' has a null item list.");
+
         foreach (ItemDataSO item in items)
         {
             if (item == null)
@@ -37,12 +40,7 @@ public class ItemRegistrySO : ScriptableObject
                 );
             }
 
-            if (string.IsNullOrWhiteSpace(item.ItemID))
-            {
-                throw new InvalidOperationException(
-                    $"Item '{item.name}' has an empty ItemID."
-                );
-            }
+            item.ValidateDefinition();
 
             if (!newLookup.TryAdd(item.ItemID, item))
             {
