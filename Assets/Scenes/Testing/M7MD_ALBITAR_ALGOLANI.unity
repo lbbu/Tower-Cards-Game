@@ -281,6 +281,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemSystemTest
   swordItem: {fileID: 11400000, guid: c5d12e64b773bbb4c833d1801e070f5b, type: 2}
+  itemRegistry: {fileID: 11400000, guid: 8c2ab657266979a4d934238c9c19655d, type: 2}
 --- !u!4 &1880022004
 Transform:
   m_ObjectHideFlags: 0

@@ -1,33 +1,49 @@
-using NUnit.Framework.Internal.Execution;
 using UnityEngine;
+using Newtonsoft.Json;
 
 public class ItemSystemTest : MonoBehaviour
 {
     [SerializeField] private ItemDataSO swordItem;
+    [SerializeField] private ItemRegistrySO itemRegistry;
 
     private void Start()
     {
-
         ItemInstance originalSword = new ItemInstance(swordItem);
 
-        originalSword.TryGetState<DurabilityState>(out var originalState);
-        originalState.TakeDamage(45f);
+        originalSword.TryGetState<DurabilityState>(
+            out DurabilityState originalDurability);
 
-        // Capture
-        string savedID = originalSword.InstanceID;
-        var savedStates = originalSword.CaptureStates();
+        originalDurability.TakeDamage(45f);
 
-        // Restore
-        ItemInstance restoredSword = new ItemInstance(swordItem, savedID);
-        restoredSword.RestoreStates(savedStates);
+        // Capture and serialize
+        ItemSaveData saveData = originalSword.CaptureSaveData();
 
-        restoredSword.TryGetState<DurabilityState>(out var restoredState);
+        string json = JsonConvert.SerializeObject(saveData);
 
-        Debug.Log("Same ID: " +
+        // Deserialize
+        ItemSaveData loadedData =
+            JsonConvert.DeserializeObject<ItemSaveData>(json);
+
+        // Restore complete ItemInstance
+        ItemInstance restoredSword =
+            ItemInstance.RestoreFromSaveData(
+                loadedData,
+                itemRegistry
+            );
+
+        restoredSword.TryGetState<DurabilityState>(
+            out DurabilityState restoredDurability);
+
+        Debug.Log("Same Instance ID: " +
             (originalSword.InstanceID == restoredSword.InstanceID));
 
-        Debug.Log("Restored Durability: " +
-            restoredState.CurrentDurability);
+        Debug.Log("Same Item Data: " +
+            (originalSword.ItemData == restoredSword.ItemData));
 
+        Debug.Log("Original Durability: " +
+            originalDurability.CurrentDurability);
+
+        Debug.Log("Restored Durability: " +
+            restoredDurability.CurrentDurability);
     }
 }

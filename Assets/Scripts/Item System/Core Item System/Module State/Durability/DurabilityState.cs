@@ -6,6 +6,10 @@ public class DurabilityState : ItemModuleState
 
     public float CurrentDurability { get; private set; }
 
+    public override string StateID => "durability";
+
+    public override Type StateDataType => typeof(DurabilityStateData);
+
     public DurabilityState(float maxDurability)
     {
         if (maxDurability <= 0)
