@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -41,6 +42,37 @@ public class ItemDataSO : ScriptableObject
     public float BasePrice => basePrice;
     public float ItemWeight => itemWeight;
     public int MaxStackSize => maxStackSize;
+
+    public void ValidateDefinition()
+    {
+        if (string.IsNullOrWhiteSpace(itemID))
+            throw new InvalidOperationException($"Item '{name}' has an empty ItemID.");
+
+        if (float.IsNaN(basePrice) || float.IsInfinity(basePrice) || basePrice < 0f)
+            throw new InvalidOperationException($"Item '{name}' has an invalid base price.");
+
+        if (float.IsNaN(itemWeight) || float.IsInfinity(itemWeight) || itemWeight < 0f)
+            throw new InvalidOperationException($"Item '{name}' has an invalid weight.");
+
+        if (maxStackSize < 1)
+            throw new InvalidOperationException($"Item '{name}' must have a positive MaxStackSize.");
+
+        if (itemModules == null)
+            throw new InvalidOperationException($"Item '{name}' has a null module list.");
+
+        var moduleTypes = new HashSet<Type>();
+        for (int index = 0; index < itemModules.Count; index++)
+        {
+            ItemModuleSO module = itemModules[index];
+            if (module == null)
+                throw new InvalidOperationException($"Item '{name}' has a missing module at index {index}.");
+
+            if (!moduleTypes.Add(module.GetType()))
+                throw new InvalidOperationException($"Item '{name}' has duplicate module type: {module.GetType().Name}.");
+
+            module.ValidateDefinition();
+        }
+    }
 
     public bool TryGetModule<TModule>(out TModule module)
         where TModule : ItemModuleSO
