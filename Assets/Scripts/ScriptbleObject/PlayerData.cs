@@ -9,6 +9,8 @@ public class PlayerData : ScriptableObject
     [Header("Movemnet setting")]
     public float WalkSpeed = 2f;
     public float SprintSpeed = 5.335f;
+    // crouch speed limit
+    public float crouchSpeed = 1.25f;
     public float SpeedChangeRate = 10f;
 
     [Header("Phyics settings")]

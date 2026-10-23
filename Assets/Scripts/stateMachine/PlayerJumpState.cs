@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerJumpState : PlayerBaseState
@@ -78,6 +79,11 @@ public class PlayerJumpState : PlayerBaseState
 
         manager.VerticalVelocity += manager.Data.Gravity * Time.deltaTime;
 
+        if (manager.VerticalVelocity < -53.0f)
+        {
+            manager.VerticalVelocity = -53.0f;
+        }
+
         Vector3 cameraForword = manager.mainCamera.forward;
         Vector3 cameraRight = manager.mainCamera.right;
 
@@ -87,7 +93,13 @@ public class PlayerJumpState : PlayerBaseState
         cameraRight.Normalize();
 
         Vector3 moveDirection = (cameraForword * manager.inputs.move.y + cameraRight * manager.inputs.move.x).normalized;
-        Vector3 moveVelocity = moveDirection * manager.Data.WalkSpeed;
+        
+        float speedMovementWhileJumping = manager.inputs.sprint? manager.Data.SprintSpeed : manager.Data.WalkSpeed;
+        // lerp the speed while jumping, to make movemnet while jumping smooth
+        manager.cuurentSpeed = Mathf.Lerp(manager.cuurentSpeed,speedMovementWhileJumping,Time.deltaTime*(manager.Data.SpeedChangeRate/2f));
+        // calculate the movemnt velocity 
+        Vector3 moveVelocity = moveDirection * manager.cuurentSpeed;
+        // applying gravity
         moveVelocity.y = manager.VerticalVelocity;
 
         manager.controller.Move(moveVelocity * Time.deltaTime);

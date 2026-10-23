@@ -35,6 +35,8 @@ public class PlayerStateMachine : MonoBehaviour
     public PlayerWalkState walkState{get; private set;}
     public PlayerSprintState SprintState { get; private set; }
     public PlayerJumpState JumpState { get; private set; }
+    public PlayerCrouchState CrouchState {get; private set;}
+    public PlayerFallState fallState {get; private set;}
 
     // to get player data.
     [Header("Player Settings")]
@@ -63,6 +65,8 @@ public class PlayerStateMachine : MonoBehaviour
         walkState = new PlayerWalkState(this);
         SprintState = new PlayerSprintState(this);
         JumpState = new PlayerJumpState(this);
+        CrouchState = new PlayerCrouchState(this);
+        fallState = new PlayerFallState(this);
 
     }
 

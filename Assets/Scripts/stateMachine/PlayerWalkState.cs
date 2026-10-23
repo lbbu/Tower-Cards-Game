@@ -31,6 +31,11 @@ public class PlayerWalkState : PlayerBaseState
     public override void UpdateState()
     {
         // checking to change state
+        if (!manager.controller.isGrounded)
+        {
+            manager.SwitchState(manager.fallState);
+            return;
+        }
         if(manager.inputs.move == Vector2.zero)
         {
             // when player isn't moving change to idel state
@@ -55,6 +60,11 @@ public class PlayerWalkState : PlayerBaseState
                 // إذا ضغط اللاعب أثناء فترة التبريد، افرغ الإدخال حتى لا ينط تلقائياً بعد انتهاء التبريد
                 manager.inputs.jump = false;
             }
+        }
+        else if (manager.inputs.crouch)
+        {
+            manager.SwitchState(manager.CrouchState);
+            return;
         }
 
         // to know where the camera is looking
