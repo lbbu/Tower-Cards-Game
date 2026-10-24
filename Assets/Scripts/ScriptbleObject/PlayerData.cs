@@ -12,6 +12,7 @@ public class PlayerData : ScriptableObject
     // crouch speed limit
     public float crouchSpeed = 1.25f;
     public float SpeedChangeRate = 10f;
+    public float AirAcceleration = 15f;
 
     [Header("Phyics settings")]
     public float JumpHeight = 1.2f;

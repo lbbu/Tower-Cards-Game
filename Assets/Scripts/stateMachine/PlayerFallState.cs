@@ -17,7 +17,7 @@ public class PlayerFallState : PlayerBaseState
      manager.animator.SetBool("Grounded", false);
      manager.animator.SetBool("FreeFall", true);
 
-     manager.VerticalVelocity = -2f;
+     manager.VerticalVelocity = Mathf.Min(manager.VerticalVelocity,0f);
     }
 
     public override void ExitState()
@@ -33,6 +33,7 @@ public class PlayerFallState : PlayerBaseState
     {
         if (manager.controller.isGrounded)
         {
+            manager.VerticalVelocity = -2f;
             if (manager.inputs.move == Vector2.zero)
             {
                 manager.SwitchState(manager.idelState);
@@ -48,6 +49,10 @@ public class PlayerFallState : PlayerBaseState
                 return;
             }
         }
+
+        // gravity accumulates, capped at terminal velocity
+        manager.VerticalVelocity += manager.Data.Gravity * Time.deltaTime;
+        manager.VerticalVelocity = Mathf.Max(manager.VerticalVelocity, -53f);
 
         // to know where the camera is looking
         // forward is for W/S inputs

@@ -44,9 +44,17 @@ namespace StarterAssets
 		{
 			SprintInput(value.isPressed);
 		}
-		public void OnCrouch(InputValue value)
+		private PlayerInput playerInput;
+
+		private void Awake()
 		{
-			crouch = value.isPressed;
+			playerInput = GetComponent<PlayerInput>();
+		}
+
+		private void Update()
+		{
+			if (playerInput != null)
+				crouch = playerInput.actions["Crouch"].IsPressed();
 		}
 #endif
 
