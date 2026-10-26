@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using Newtonsoft.Json;
 
 public class ItemInstance
@@ -14,20 +16,32 @@ public class ItemInstance
         if (itemData == null)
             throw new ArgumentNullException(nameof(itemData));
 
+        itemData.ValidateDefinition();
         ItemData = itemData;
         InstanceID = Guid.NewGuid().ToString("N");
 
+        var stateIDs = new HashSet<string>(StringComparer.Ordinal);
         foreach (ItemModuleSO module in itemData.ItemModules)
         {
-            if (module == null)
-                continue;
-
             ItemModuleState state = module.CreateState();
 
             if (state == null)
                 continue;
 
             Type stateType = state.GetType();
+
+            if (string.IsNullOrWhiteSpace(state.StateID))
+                throw new InvalidOperationException($"State '{stateType.Name}' on item '{itemData.name}' has an empty StateID.");
+
+            if (!stateIDs.Add(state.StateID))
+                throw new InvalidOperationException($"Duplicate runtime StateID on item '{itemData.name}': {state.StateID}.");
+
+            Type dataType = state.StateDataType;
+            if (dataType == null || !typeof(ItemModuleStateData).IsAssignableFrom(dataType) ||
+                dataType.IsAbstract || dataType.ContainsGenericParameters)
+            {
+                throw new InvalidOperationException($"State '{state.StateID}' on item '{itemData.name}' has an invalid StateDataType.");
+            }
 
             if (!moduleStates.TryAdd(stateType, state))
             {
@@ -50,38 +64,6 @@ public class ItemInstance
     }
 
 
-    public Dictionary<Type, ItemModuleStateData> CaptureStates()
-    {
-        var savedStates = new Dictionary<Type, ItemModuleStateData>();
-
-        foreach (var pair in moduleStates)
-        {
-            savedStates.Add(
-                pair.Key,
-                pair.Value.CaptureState()
-            );
-        }
-
-        return savedStates;
-    }
-
-    public void RestoreStates(
-        Dictionary<Type, ItemModuleStateData> savedStates)
-    {
-        if (savedStates == null)
-            throw new ArgumentNullException(nameof(savedStates));
-
-        foreach (var pair in savedStates)
-        {
-            if (moduleStates.TryGetValue(
-                pair.Key, out ItemModuleState state))
-            {
-                state.RestoreState(pair.Value);
-            }
-        }
-    }
-
-
     public bool TryGetState<TState>(out TState state)
         where TState : ItemModuleState
     {
@@ -99,6 +81,7 @@ public class ItemInstance
 
     public ItemSaveData CaptureSaveData()
     {
+        JsonSerializer serializer = CreateStateSerializer();
         ItemSaveData saveData = new ItemSaveData
         {
             itemID = ItemData.ItemID,
@@ -111,10 +94,16 @@ public class ItemInstance
 
             ItemModuleStateData stateData = state.CaptureState();
 
+            if (stateData == null || !state.StateDataType.IsInstanceOfType(stateData))
+                throw new InvalidOperationException($"State '{state.StateID}' captured incompatible state data.");
+
+            using var jsonWriter = new StringWriter(CultureInfo.InvariantCulture);
+            serializer.Serialize(jsonWriter, stateData, state.StateDataType);
+
             ItemStateSaveData savedState = new ItemStateSaveData
             {
                 stateID = state.StateID,
-                jsonData = JsonConvert.SerializeObject(stateData)
+                jsonData = jsonWriter.ToString()
             };
 
             saveData.states.Add(savedState);
@@ -167,6 +156,7 @@ public class ItemInstance
         }
 
         var restoredIDs = new HashSet<string>(StringComparer.Ordinal);
+        JsonSerializer serializer = CreateStateSerializer();
 
         foreach (ItemStateSaveData savedState in saveData.states)
         {
@@ -197,11 +187,10 @@ public class ItemInstance
                     $"Empty JSON for state: {savedState.stateID}");
             }
 
-            ItemModuleStateData stateData =
-                JsonConvert.DeserializeObject(
-                    savedState.jsonData,
-                    runtimeState.StateDataType
-                ) as ItemModuleStateData;
+            using var textReader = new StringReader(savedState.jsonData);
+            using var jsonReader = new JsonTextReader(textReader);
+            ItemModuleStateData stateData = serializer.Deserialize(
+                jsonReader, runtimeState.StateDataType) as ItemModuleStateData;
 
             if (stateData == null)
             {
@@ -220,6 +209,18 @@ public class ItemInstance
         }
 
         return item;
+    }
+
+    private static JsonSerializer CreateStateSerializer()
+    {
+        // Create(), unlike CreateDefault()/JsonConvert, does not inherit global defaults.
+        return JsonSerializer.Create(new JsonSerializerSettings
+        {
+            TypeNameHandling = TypeNameHandling.None,
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            MissingMemberHandling = MissingMemberHandling.Error,
+            CheckAdditionalContent = true
+        });
     }
 
 

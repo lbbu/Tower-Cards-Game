@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(
@@ -11,6 +12,12 @@ public class DurabilityModuleSO : ItemModuleSO
     [SerializeField] private float maxDurability = 100f;
 
     public float MaxDurability => maxDurability;
+
+    public override void ValidateDefinition()
+    {
+        if (float.IsNaN(maxDurability) || float.IsInfinity(maxDurability) || maxDurability <= 0f)
+            throw new InvalidOperationException($"Durability module '{name}' must have finite, positive maximum durability.");
+    }
 
     public override ItemModuleState CreateState()
     {
