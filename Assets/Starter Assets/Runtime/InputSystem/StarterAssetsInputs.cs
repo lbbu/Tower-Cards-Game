@@ -12,6 +12,7 @@ namespace StarterAssets
 		public Vector2 look;
 		public bool jump;
 		public bool sprint;
+		public bool crouch;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -42,6 +43,18 @@ namespace StarterAssets
 		public void OnSprint(InputValue value)
 		{
 			SprintInput(value.isPressed);
+		}
+		private PlayerInput playerInput;
+
+		private void Awake()
+		{
+			playerInput = GetComponent<PlayerInput>();
+		}
+
+		private void Update()
+		{
+			if (playerInput != null)
+				crouch = playerInput.actions["Crouch"].IsPressed();
 		}
 #endif
 

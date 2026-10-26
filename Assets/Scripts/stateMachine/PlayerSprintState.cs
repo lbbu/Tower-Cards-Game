@@ -28,6 +28,11 @@ public class PlayerSprintState : PlayerBaseState
 
     public override void UpdateState()
     {
+        if (!manager.controller.isGrounded)
+        {
+            manager.SwitchState(manager.fallState);
+            return;
+        }
         if (manager.inputs.jump)
         {
             if (manager.JumpCooldownTimer <= 0f)
@@ -71,6 +76,8 @@ public class PlayerSprintState : PlayerBaseState
 
         // applying gravity
         manager.VerticalVelocity = manager.Data.Gravity * Time.deltaTime;
+        // to apply the gravity
+        sprintVelocity.y = -2f;
 
         manager.controller.Move(sprintVelocity*Time.deltaTime);
 

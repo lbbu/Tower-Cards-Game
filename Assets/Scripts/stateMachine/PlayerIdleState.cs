@@ -31,6 +31,11 @@ public class PlayerIdleState : PlayerBaseState
     {
         // checking to weather update the state or not.
         // if the player was moving change to walk state
+        if (!manager.controller.isGrounded)
+        {
+            manager.SwitchState(manager.fallState);
+            return;
+        }
         if(manager.inputs.move != Vector2.zero)
         {
             manager.SwitchState(manager.walkState);
@@ -49,6 +54,12 @@ public class PlayerIdleState : PlayerBaseState
                 manager.inputs.jump = false;
             }
         }
+        else if (manager.inputs.crouch)
+        {
+            manager.SwitchState(manager.CrouchState);
+            return;
+        }
+
 
         // lerp here is used for deaccerlation of the speed to 0
         manager.cuurentSpeed = Mathf.Lerp(manager.cuurentSpeed,0f,Time.deltaTime * manager.Data.SpeedChangeRate);
